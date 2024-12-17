@@ -52,12 +52,26 @@ make PLATFORM=PLATFORM_DESKTOP
 ## Directory Structure
 ```
 .
-├── Assets/           # Game textures and sprites
-├── sounds/          # Audio files
-├── .vscode/         # VS Code configuration
-├── main.cpp         # Main game source code
-├── Makefile        # Build configuration
-└── README.md       # This file
+├── Assets/               # Game textures and sprites
+├── sounds/              # Audio files
+├── .vscode/             # VS Code configuration
+├── obj/                 # Compiled object files (.o)
+├── src/                 # Source files
+│   ├── game_state.h     # Game state management header
+│   ├── gameplay.cpp     # Gameplay logic implementation
+│   ├── gameplay.h       # Gameplay logic header
+│   ├── main.cpp         # Main game source code
+│   ├── maze.cpp         # Maze generation implementation
+│   ├── maze.h           # Maze generation header
+│   ├── resources.cpp    # Resource management implementation
+│   ├── resources.h      # Resource management header
+│   ├── ui.cpp           # UI rendering implementation
+│   └── ui.h             # UI rendering header
+├── .gitignore           
+├── high_scores.dat      # High scores storage file
+├── LICENSE              # Project license
+├── Makefile             # Build configuration
+└── README.md            # This file
 ```
 
 ## Credits
