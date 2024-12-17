@@ -15,7 +15,6 @@
                 "args": [
                     "RAYLIB_PATH=C:/raylib/raylib",
                     "PROJECT_NAME=${fileBasenameNoExtension}",
-                    "OBJS=*.cpp",
                     "BUILD_MODE=DEBUG",
                     "CXXFLAGS+=-std=c++17 -fopenmp"
                 ]
@@ -23,7 +22,6 @@
             "osx": {
                 "args": [
                     "PROJECT_NAME=${fileBasenameNoExtension}",
-                    "OBJS=*.cpp",
                     "BUILD_MODE=DEBUG",
                     "CXXFLAGS+=-std=c++17"
                 ]
@@ -34,7 +32,6 @@
                     "DESTDIR=/home/linuxbrew/.linuxbrew",
                     "RAYLIB_LIBTYPE=SHARED",
                     "EXAMPLE_RUNTIME_PATH=/home/linuxbrew/.linuxbrew/lib",
-                    "OBJS=*.cpp",
                     "BUILD_MODE=DEBUG",
                     "CXXFLAGS+=-std=c++17 -fopenmp"
                 ]
@@ -60,14 +57,12 @@
                 "args": [
                     "RAYLIB_PATH=C:/raylib/raylib",
                     "PROJECT_NAME=${fileBasenameNoExtension}",
-                    "OBJS=*.cpp",
                     "CXXFLAGS+=-std=c++17 -fopenmp"
                 ]
             },
             "osx": {
                 "args": [
                     "PROJECT_NAME=${fileBasenameNoExtension}",
-                    "OBJS=*.cpp",
                     "CXXFLAGS+=-std=c++17 -fopenmp"
                 ]
             },
@@ -77,7 +72,6 @@
                     "DESTDIR=/home/linuxbrew/.linuxbrew",
                     "RAYLIB_LIBTYPE=SHARED",
                     "EXAMPLE_RUNTIME_PATH=/home/linuxbrew/.linuxbrew/lib",
-                    "OBJS=*.cpp",
                     "CXXFLAGS+=-std=c++17 -fopenmp"
                 ]
             },
