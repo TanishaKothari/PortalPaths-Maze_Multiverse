@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
+#include <limits>
 #include <random>
 #include <fstream>
 #include <iomanip>
@@ -124,7 +125,7 @@ enum class SoundSettings {
 };
 
 // Global variables
-GameState currentState = StartMenu;
+GameState currentGameState = StartMenu;
 GameMode currentMode = Untimed;
 Difficulty currentDifficulty = Easy;
 MenuState menuState = DifficultySelect;
@@ -708,7 +709,7 @@ bool PathExists(int startX, int startY, int endX, int endY) {
     std::priority_queue<Node, std::vector<Node>, std::greater<Node>> frontier;
 
     // Costs and visited grids
-    std::vector<std::vector<int>> cost(rows, std::vector<int>(cols, INT_MAX));
+    std::vector<std::vector<int>> cost(rows, std::vector<int>(cols, std::numeric_limits<int>::max()));
     std::vector<std::vector<bool>> visited(rows, std::vector<bool>(cols, false));
 
     // Start point
@@ -1236,7 +1237,7 @@ void UpdateSpeedBoosts(float deltaTime) {
     }
 }
 
-// Add new function to draw speed boosts
+// Function to draw speed boosts
 void DrawSpeedBoosts() {
     for (const auto& boost : speedBoosts) {
         if (boost.active) {
@@ -1476,19 +1477,20 @@ void AddHighScore(float time, bool wasTimed) {
 }
 
 void DrawDifficultyMenu() {
-    DrawText("Select Difficulty", screenWidth/2 - MeasureText("Select Difficulty", 20)/2, screenHeight/2 - 80, 20, ORANGE);
-    DrawText("1. Easy", screenWidth/2 - MeasureText("1. Easy", 20)/2, screenHeight/2 - 40, 20, GREEN);
-    DrawText("2. Medium", screenWidth/2 - MeasureText("2. Medium", 20)/2, screenHeight/2, 20, YELLOW);
-    DrawText("3. Hard", screenWidth/2 - MeasureText("3. Hard", 20)/2, screenHeight/2 + 40, 20, RED);
+    DrawText("Select Difficulty", screenWidth/2 - MeasureText("Select Difficulty", 20) / 2, screenHeight / 2 - 100, 20, ORANGE);
+    DrawText("1. Easy", screenWidth/2 - MeasureText("1. Easy", 20) / 2, screenHeight / 2 - 60, 20, GREEN);
+    DrawText("2. Medium", screenWidth/2 - MeasureText("2. Medium", 20) / 2, screenHeight / 2 - 20, 20, YELLOW);
+    DrawText("3. Hard", screenWidth/2 - MeasureText("3. Hard", 20) / 2, screenHeight / 2 + 20, 20, DARKBLUE);
+    DrawText("4. Quit", screenWidth / 2 - MeasureText("4. Quit", 20) / 2, screenHeight / 2 + 60, 20, RED);
 }
 
 void DrawModeMenu() {
     // Game mode options
-    DrawText("Select Game Mode", screenWidth / 2 - MeasureText("Select Game Mode", 20) / 2, screenHeight / 2 - 60, 20, ORANGE);
-    DrawText("1. Timed", screenWidth / 2 - MeasureText("1. Timed", 20) / 2, screenHeight / 2 - 20, 20, ORANGE);
-    DrawText("2. Untimed", screenWidth / 2 - MeasureText("2. Untimed", 20) / 2, screenHeight / 2 + 20, 20, ORANGE);
-    DrawText("3. Change Difficulty", screenWidth / 2 - MeasureText("3. Change Difficulty", 20) / 2, screenHeight / 2 + 60, 20, ORANGE);
-    DrawText("4. Quit", screenWidth / 2 - MeasureText("4. Quit", 20) / 2, screenHeight / 2 + 100, 20, RED);
+    DrawText("Select Game Mode", screenWidth / 2 - MeasureText("Select Game Mode", 20) / 2, screenHeight / 2 - 100, 20, ORANGE);
+    DrawText("1. Timed", screenWidth / 2 - MeasureText("1. Timed", 20) / 2, screenHeight / 2 - 60, 20, ORANGE);
+    DrawText("2. Untimed", screenWidth / 2 - MeasureText("2. Untimed", 20) / 2, screenHeight / 2 - 20, 20, ORANGE);
+    DrawText("3. Change Difficulty", screenWidth / 2 - MeasureText("3. Change Difficulty", 20) / 2, screenHeight / 2 + 20, 20, ORANGE);
+    DrawText("4. Quit", screenWidth / 2 - MeasureText("4. Quit", 20) / 2, screenHeight / 2 + 60, 20, RED);
 
     // Gameplay instructions
     DrawText("Game Controls:", screenWidth / 2 - MeasureText("Game Controls:", 20) / 2, screenHeight / 2 + 140, 20, LIGHTGRAY);
@@ -1552,58 +1554,63 @@ void DrawEndMenu(bool gameWon, float completionTime) {
 }
 
 void HandleMenuInput() {
-    if (menuState == DifficultySelect) {
-        if (IsKeyPressed(KEY_ONE)) {
-            PlaySound(GameResources::menuSound);
-            currentDifficulty = Easy;
-            menuState = ModeSelect;
-        } else if (IsKeyPressed(KEY_TWO)) {
-            PlaySound(GameResources::menuSound);
-            currentDifficulty = Medium;
-            menuState = ModeSelect;
-        } else if (IsKeyPressed(KEY_THREE)) {
-            PlaySound(GameResources::menuSound);
-            currentDifficulty = Hard;
-            menuState = ModeSelect;
+    if (currentGameState == StartMenu) {
+        if (menuState == DifficultySelect) {
+            if (IsKeyPressed(KEY_ONE)) {
+                PlaySound(GameResources::menuSound);
+                currentDifficulty = Easy;
+                menuState = ModeSelect;
+            } else if (IsKeyPressed(KEY_TWO)) {
+                PlaySound(GameResources::menuSound);
+                currentDifficulty = Medium;
+                menuState = ModeSelect;
+            } else if (IsKeyPressed(KEY_THREE)) {
+                PlaySound(GameResources::menuSound);
+                currentDifficulty = Hard;
+                menuState = ModeSelect;
+            } else if (IsKeyPressed(KEY_FOUR)) {
+                PlaySound(GameResources::menuSound);
+                GameResources::UnloadAllResources();
+                CloseWindow();
+                exit(0);
+            }
+        } else if (menuState == ModeSelect) {
+            if (IsKeyPressed(KEY_ONE)) {
+                PlaySound(GameResources::startSound);
+                currentMode = Timed;
+                currentGameState = Playing;
+                InitializeGameWithDifficulty();
+            } else if (IsKeyPressed(KEY_TWO)) {
+                PlaySound(GameResources::startSound);
+                currentMode = Untimed;
+                currentGameState = Playing;
+                InitializeGameWithDifficulty();
+            } else if (IsKeyPressed(KEY_THREE)) {
+                PlaySound(GameResources::menuSound);
+                menuState = DifficultySelect;
+            } else if (IsKeyPressed(KEY_FOUR)) {
+                PlaySound(GameResources::menuSound);
+                GameResources::UnloadAllResources();
+                CloseWindow();
+                exit(0);
+            }
         }
-    } else if (menuState == ModeSelect) {
+    } else if (currentGameState == EndMenu) {
         if (IsKeyPressed(KEY_ONE)) {
+            RandomizeTheme();
             PlaySound(GameResources::startSound);
-            currentMode = Timed;
-            currentState = Playing;
-            InitializeGameWithDifficulty();
+            ResetGame();
+            currentGameState = Playing;
         } else if (IsKeyPressed(KEY_TWO)) {
-            PlaySound(GameResources::startSound);
-            currentMode = Untimed;
-            currentState = Playing;
-            InitializeGameWithDifficulty();
-        } else if (IsKeyPressed(KEY_THREE)) {
+            RandomizeTheme();
             PlaySound(GameResources::menuSound);
-            menuState = DifficultySelect;
-        } else if (IsKeyPressed(KEY_FOUR)) {
+            currentGameState = StartMenu;
+        } else if (IsKeyPressed(KEY_THREE)) {
             PlaySound(GameResources::menuSound);
             GameResources::UnloadAllResources();
             CloseWindow();
             exit(0);
         }
-    }
-}
-
-void HandleEndMenuInput() {
-    if (IsKeyPressed(KEY_ONE)) {
-        RandomizeTheme();
-        PlaySound(GameResources::startSound);
-        ResetGame();
-        currentState = Playing;
-    } else if (IsKeyPressed(KEY_TWO)) {
-        RandomizeTheme();
-        PlaySound(GameResources::menuSound);
-        currentState = StartMenu;
-    } else if (IsKeyPressed(KEY_THREE)) {
-        PlaySound(GameResources::menuSound);
-        GameResources::UnloadAllResources();
-        CloseWindow();
-        exit(0);
     }
 }
 
@@ -1707,13 +1714,13 @@ int main() {
     GameResources::LoadPowerupResources();
     SetTargetFPS(60);
 
-    // Randomize theme at startup
-    RandomizeTheme();
-
     // Seed random number generator
     std::srand(std::time(nullptr));
 
     ResetGame();
+
+    // Randomize theme at startup
+    RandomizeTheme();
 
     if (currentTheme == GameTheme::Space) {
         starFieldTexture = CreateStarFieldTexture(screenWidth, screenHeight, 200);  // Precompute starfield
@@ -1722,7 +1729,7 @@ int main() {
     float timeElapsed = 0.0f;
 
     while (!WindowShouldClose()) {
-        if (currentState == StartMenu || currentState == Playing) {
+        if (currentGameState == StartMenu || currentGameState == Playing) {
             switch(currentTheme) {
                 case GameTheme::Space:
                     if (!IsMusicStreamPlaying(GameResources::spaceAmbient)) {
@@ -1760,7 +1767,7 @@ int main() {
                 break;
         }
 
-        switch (currentState) {
+        switch (currentGameState) {
             case StartMenu:
                 if (menuState == DifficultySelect) {
                     DrawDifficultyMenu();
@@ -1811,7 +1818,7 @@ int main() {
                             StopCurrentThemeMusic();
                             gameWon = true;
                             AddHighScore(timeElapsed, currentMode == Timed);
-                            currentState = EndMenu;
+                            currentGameState = EndMenu;
                         }
 
                         // Check if time limit is exceeded in timed mode
@@ -1819,7 +1826,7 @@ int main() {
                             PlaySound(GameResources::loseSound);
                             StopCurrentThemeMusic();
                             gameWon = false;
-                            currentState = EndMenu;
+                            currentGameState = EndMenu;
                         }
 
                         UpdateSpeedBoosts(GetFrameTime());
@@ -1913,7 +1920,7 @@ int main() {
                 break;
             case EndMenu:
                 DrawEndMenu(gameWon, timeElapsed);
-                HandleEndMenuInput();
+                HandleMenuInput();
                 break;
         }
 
