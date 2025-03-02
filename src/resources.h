@@ -14,8 +14,8 @@ struct ThemeColors {
 
 // Game themes
 enum class GameTheme {
+    Jungle,
     Space,
-    Jungle, 
     Desert
 };
 

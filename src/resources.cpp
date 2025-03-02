@@ -207,9 +207,17 @@ const ThemeColors DESERT_COLORS = {
     {0, 191, 255, 255}      // Blue oasis
 };
 
+GameTheme lastTheme = static_cast<GameTheme>(-1); // Initialize with an invalid theme
+
 void RandomizeTheme() {
-    GAME_STATE.setCurrentTheme(static_cast<GameTheme>(rand() % 3));
-    SetThemeResources(GAME_STATE.getCurrentTheme());
+    GameTheme newTheme;
+    do {
+        newTheme = static_cast<GameTheme>(rand() % 3);
+    } while (newTheme == lastTheme);
+
+    lastTheme = newTheme;
+    GAME_STATE.setCurrentTheme(newTheme);
+    SetThemeResources(newTheme);
 }
 
 Texture2D GetPlayerTextureForTheme(GameTheme theme) {

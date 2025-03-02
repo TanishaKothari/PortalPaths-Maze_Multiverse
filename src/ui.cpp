@@ -35,12 +35,22 @@ std::string Score::ToString() const {
 
     // Format UTC timestamp
     std::tm* tm = std::gmtime(&timestamp);
-    char timeStr[32];
-    std::strftime(timeStr, sizeof(timeStr), "%Y-%m-%d %H:%M UTC", tm);
-    
-    ss << " | " << (wasTimed ? "Timed" : "Untimed") 
-        << " | " << diffStr
-        << " | " << timeStr;
+    if (tm != nullptr) {
+        char timeStr[32];
+        if (std::strftime(timeStr, sizeof(timeStr), "%Y-%m-%d %H:%M UTC", tm)) {
+            ss << " | " << (wasTimed ? "Timed" : "Untimed") 
+               << " | " << diffStr
+               << " | " << timeStr;
+        } else {
+            ss << " | " << (wasTimed ? "Timed" : "Untimed") 
+               << " | " << diffStr
+               << " | Invalid Time";
+        }
+    } else {
+        ss << " | " << (wasTimed ? "Timed" : "Untimed") 
+           << " | " << diffStr
+           << " | Invalid Time";
+    }
 
     return ss.str();
 }
