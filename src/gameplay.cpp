@@ -49,6 +49,8 @@ void ResetGame() {
     SpawnPowerups();
     
     GAME_STATE.setStartTime(GetTime());
+    GAME_STATE.setTotalPausedTime(0.0f);
+    GAME_STATE.setTimeElapsed(0.0f);
     
     // Reset player and target position and rotation
     GAME_STATE.setPlayerX(0); GAME_STATE.setPlayerY(0);
@@ -66,6 +68,8 @@ void InitializeGameWithDifficulty() {
     GAME_STATE.setTimeBonusAmount(settings.timeBonusAmount);
     GAME_STATE.setCellSize(settings.cellSize);
     GAME_STATE.setObstaclePercentage(settings.obstaclePercentage);
+    GAME_STATE.setTotalPausedTime(0.0f);
+    GAME_STATE.setTimeElapsed(0.0f);
 
     // Resize grid with new dimensions
     ResetGame();
